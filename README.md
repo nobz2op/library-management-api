@@ -1,114 +1,115 @@
- Library Management API
+ BOOK-MANAGEMENT
 
-A simple Node.js + Express API for managing books and users in a library.  
-This project was built as part of learning Node.js fundamentals and demonstrates basic CRUD operations and user management.
+A simple Node.js + Express REST API for managing books and users in a library.
+This project demonstrates CRUD operations, user management, and basic transaction handling (issue/return books).
 
----
+ Features
 
-## Features
-- Add new books with details (name, author, pages, price, availability).
-- View all books in the library.
-- Edit/update book details.
-- Delete books from the library.
-- Issue a book .
-- Return a book .
-- Manage users (basic add/view/update/delete).
+Add new books with details (title, author, pages, price, availability).
 
----
+View all books in the library.
 
-## Tech Stack
-- **Node.js** (Runtime)
-- **Express.js** (Web framework)
-- **In-memory Data Store** (Books & Users are stored in arrays for now — no DB used)
+Edit/update book details.
 
----
+Delete books from the library.
 
-##  Project Structure
-library-management-api/
+Issue a book (mark unavailable).
+
+Return a book (mark available again).
+
+Manage users (basic add/view/update/delete).
+
+ Tech Stack
+
+Node.js (Runtime)
+
+Express.js (Web framework)
+
+In-memory Data Store (Books & Users stored in arrays — no DB used yet)
+
+ Project Structure
+BOOK-MANAGEMENT/
 │── controllers/
-│ ├── bookController.js
-│ └── userController.js
+│   ├── bookController.js
+│   └── userController.js
 │── models/
-│ ├── bookModel.js
-│ └── userModel.js
+│   ├── bookModel.js
+│   └── userModel.js
 │── routes/
-│ ├── bookRoutes.js
-│ └── userRoutes.js
+│   ├── bookRoutes.js
+│   └── userRoutes.js
 │── server.js
 └── package.json
 
-yaml
-Copy
-Edit
+ Installation & Setup
 
----
-
-## Installation & Setup
 Clone the repository and install dependencies:
 
-```bash
-git clone https://github.com/nobz2op/library-management-api.git
-cd library-management-api
+git clone https://github.com/nobz2op/BOOK-MANAGEMENT.git
+cd BOOK-MANAGEMENT
 npm install
+
+
 Start the server:
 
-bash
-Copy
-Edit
 node server.js
-Server runs on:
 
-arduino
-Copy
-Edit
+
+Server runs at:
+
 http://localhost:3000
+
  API Endpoints
-Books 
-Add Book
+ Books
+ Add Book
+
 POST /books
 
-json
-Copy
-Edit
 {
   "name": "The Alchemist",
   "author": "Paulo Coelho",
   "pages": 197,
   "price": 350
 }
-Get All Books
+
+ Get All Books
+
 GET /books
 
-Edit Book
+ Edit Book
+
 PUT /books/:id
 
-Delete Book
+ Delete Book
+
 DELETE /books/:id
 
-Issue Book
+ Issue Book
+
 PUT /books/:id/issue
 
-Return Book
+ Return Book
+
 PUT /books/:id/return
 
-Users 
-Add User
+ Users
+ Add User
+
 POST /users
 
-json
-Copy
-Edit
 {
   "name": "Noble",
   "email": "noble@example.com"
 }
-Get All Users
+
+ Get All Users
+
 GET /users
 
-Notes
+ Notes
 
-Currently uses in-memory storage (data resets when server restarts).
+Uses in-memory storage (data resets when the server restarts).
 
-Can be easily extended with MongoDB/MySQL for persistence.
+Can be extended with MongoDB / MySQL for persistence.
 
 Built as a learning project to demonstrate Node.js, Express, MVC structure, and REST API basics.
