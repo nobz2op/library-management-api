@@ -105,3 +105,10 @@ Edit
 Get All Users
 GET /users
 
+Notes
+
+Currently uses in-memory storage (data resets when server restarts).
+
+Can be easily extended with MongoDB/MySQL for persistence.
+
+Built as a learning project to demonstrate Node.js, Express, MVC structure, and REST API basics.
