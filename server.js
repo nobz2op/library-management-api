@@ -1,24 +1,26 @@
+require("dotenv").config();
+
 const express = require("express");
-const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
 const bookRoutes = require("./routes/bookRoutes");
 const userRoutes = require("./routes/userRoutes");
+const authenticateToken = require("./middleware/authMiddleware");
 
 const app = express();
-app.use(bodyParser.json());
 
-// Root Route
-app.get("/", (req, res) => {
-  res.send(" Library Management API - Use /books endpoint");
-});
+app.use(express.json());
 
+// Routes with auth middleware applied at route-level
+app.use("/api/books", bookRoutes);
+app.use("/api/users", userRoutes);
 
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Register Routes
-app.use("/books", bookRoutes);
-app.use("/users", userRoutes);
-
-// Start Server
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(` Server running at http://localhost:${PORT}`);
-});
+// Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

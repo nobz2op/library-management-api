@@ -1,95 +1,130 @@
-const BookModel = require("../models/bookModel");
+const Book = require("../models/bookModel");
 
 // ADD Book
+async function addBook(req, res) {
+  try {
+    const { id, name, author, pages, price } = req.body;
 
-function addBook(req, res) {
-  const { name, author, pages, price } = req.body;
+    if (!id || !name || !author || !pages || !price) {
+      return res.status(400).json({ message: "All fields including id are required" });
+    }
 
-  if (!name || !author || !pages || !price) {
-    return res.status(400).json({ message: "All fields are required" });
+    const existingBook = await Book.findById(id);
+    if (existingBook) {
+      return res.status(409).json({ message: "Book with this ID already exists" });
+    }
+
+    const newBook = await Book.create({ _id: id, name, author, pages, price, available: true });
+    res.status(201).json({ message: "Book added successfully", book: newBook });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding book", error: error.message });
   }
-
-  const newBook = BookModel.addBook({ name, author, pages, price });
-  res.status(201).json({ message: "Book added successfully", book: newBook });
-}
-
-
-
-
-//Get books
-function getBooks(req, res) {
-  const books = BookModel.getAllBooks();
-  res.json(books);
-}
-
-
-
-
-//Update book
-
-function updateBook(req, res) {
-  const bookId = parseInt(req.params.id);
-  const updated = BookModel.updateBook(bookId, req.body);
-
-  if (!updated) {
-    return res.status(404).json({ message: "Book not found" });
-  }
-
-  res.json({ message: "Book updated successfully", book: updated });
 }
 
 
 
 
 
-//Delete book
-function deleteBook(req, res) {
-  const bookId = parseInt(req.params.id);
-  const deleted = BookModel.deleteBook(bookId);
-
-  if (!deleted) {
-    return res.status(404).json({ message: "Book not found" });
+// Get All Books
+async function getBooks(req, res) {
+  try {
+    const books = await Book.find();
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books", error: error.message });
   }
-
-  res.json({ message: "Book deleted successfully" });
 }
 
 
 
 
-// Issue book
-function issueBook(req, res) {
-  const bookId = parseInt(req.params.id);
-  const book = BookModel.findBookById(bookId);
 
-  if (!book) {
-    return res.status(404).json({ message: "Book not found" });
-  }
-  if (!book.available) {
-    return res.status(400).json({ message: "Book already issued" });
-  }
+// Update Book
+async function updateBook(req, res) {
+  try {
+    const bookId = req.params.id;
+    const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, { new: true });
 
-  book.available = false;
-  res.json({ message: "Book issued successfully", book });
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    res.json({ message: "Book updated successfully", book: updatedBook });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating book", error: error.message });
+  }
 }
 
 
 
 
-//Return book
-function returnBook(req, res) {
-  const bookId = parseInt(req.params.id);
-  const book = BookModel.findBookById(bookId);
+// Delete Book
+async function deleteBook(req, res) {
+  try {
+    const bookId = req.params.id;
+    const deletedBook = await Book.findByIdAndDelete(bookId);
 
-  if (!book) {
-    return res.status(404).json({ message: "Book not found" });
-  }
-  if (book.available) {
-    return res.status(400).json({ message: "Book already in library" });
-  }
+    if (!deletedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
 
-  book.available = true;
-  res.json({ message: "Book returned successfully", book });
+    res.json({ message: "Book deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting book", error: error.message });
+  }
+}
+
+
+
+
+
+
+// Issue Book
+async function issueBook(req, res) {
+  try {
+    const bookId = req.params.id;
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    if (!book.available) {
+      return res.status(400).json({ message: "Book already issued" });
+    }
+
+    book.available = false;
+    await book.save();
+
+    res.json({ message: "Book issued successfully", book });
+  } catch (error) {
+    res.status(500).json({ message: "Error issuing book", error: error.message });
+  }
+}
+
+
+
+
+
+// Return Book
+async function returnBook(req, res) {
+  try {
+    const bookId = req.params.id;
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    if (book.available) {
+      return res.status(400).json({ message: "Book already in library" });
+    }
+
+    book.available = true;
+    await book.save();
+
+    res.json({ message: "Book returned successfully", book });
+  } catch (error) {
+    res.status(500).json({ message: "Error returning book", error: error.message });
+  }
 }
 
 module.exports = {

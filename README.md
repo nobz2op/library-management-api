@@ -1,115 +1,141 @@
- BOOK-MANAGEMENT
+# Book Management API
 
-A simple Node.js + Express REST API for managing books and users in a library.
-This project demonstrates CRUD operations, user management, and basic transaction handling (issue/return books).
+A secure RESTful API built with Node.js, Express, and MongoDB to manage books and users, protected by JWT authentication.
 
- Features
+---
 
-Add new books with details (title, author, pages, price, availability).
+## Features
 
-View all books in the library.
+- JWT-based authentication securing all routes
+- CRUD operations for books and users using custom string IDs
+- Issue and return management for books
+- Input validation and error handling
 
-Edit/update book details.
+---
 
-Delete books from the library.
+## Technologies
 
-Issue a book (mark unavailable).
+- Node.js & Express.js
+- MongoDB with Mongoose
+- JSON Web Tokens (JWT)
+- dotenv for environment variables
 
-Return a book (mark available again).
+---
 
-Manage users (basic add/view/update/delete).
+## Getting Started
 
- Tech Stack
+### Setup
 
-Node.js (Runtime)
+1. Clone the repo and install dependencies:
 
-Express.js (Web framework)
-
-In-memory Data Store (Books & Users stored in arrays — no DB used yet)
-
- Project Structure
-BOOK-MANAGEMENT/
-│── controllers/
-│   ├── bookController.js
-│   └── userController.js
-│── models/
-│   ├── bookModel.js
-│   └── userModel.js
-│── routes/
-│   ├── bookRoutes.js
-│   └── userRoutes.js
-│── server.js
-└── package.json
-
- Installation & Setup
-
-Clone the repository and install dependencies:
-
-git clone https://github.com/nobz2op/BOOK-MANAGEMENT.git
-cd BOOK-MANAGEMENT
 npm install
 
+text
 
-Start the server:
+2. Configure environment variables in a `.env` file:
+
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/book_management
+JWT_SECRET=your_secret_key
+
+text
+
+3. Ensure MongoDB is running locally.
+
+4. Generate a JWT token for testing:
+
+node generateToken.js
+
+text
+
+5. Run the server:
 
 node server.js
 
+text
 
-Server runs at:
+---
 
-http://localhost:5000
+## API Usage
 
- API Endpoints
- Books
- Add Book
+Include the JWT access token in every request header:  
+Authorization: Bearer <your_token>
 
-POST /books
+text
 
-{
-  "name": "The Alchemist",
-  "author": "Paulo Coelho",
-  "pages": 197,
-  "price": 350
-}
+### Books Endpoints
 
- Get All Books
+| Method | Endpoint                | Description                 |
+| ------ | ----------------------- | --------------------------- |
+| POST   | `/api/books`            | Create a new book           |
+| GET    | `/api/books`            | Get all books               |
+| PUT    | `/api/books/:id`        | Update a book by its ID     |
+| DELETE | `/api/books/:id`        | Delete a book by its ID     |
+| POST   | `/api/books/issue/:id`  | Issue a book                |
+| POST   | `/api/books/return/:id` | Return a book               |
 
-GET /books
+### Users Endpoints
 
- Edit Book
+| Method | Endpoint            | Description             |
+| ------ | ------------------- | ----------------------- |
+| POST   | `/api/users`        | Create a new user       |
+| GET    | `/api/users`        | Get all users           |
+| PUT    | `/api/users/:id`    | Update a user by ID     |
+| DELETE | `/api/users/:id`    | Delete a user by ID     |
 
-PUT /books/:id
+---
 
- Delete Book
+## Example Request Formats
 
-DELETE /books/:id
-
- Issue Book
-
-PUT /books/:id/issue
-
- Return Book
-
-PUT /books/:id/return
-
- Users
- Add User
-
-POST /users
+### Adding or Updating Books
 
 {
-  "name": "Noble",
-  "email": "noble@example.com"
+"id": "your_unique_book_id",
+"name": "Book Title",
+"author": "Author Name",
+"pages": 123,
+"price": 99
 }
 
- Get All Users
+text
 
-GET /users
+### Adding or Updating Users
 
- Notes
+{
+"id": "your_unique_user_id",
+"name": "User Name",
+"email": "user@example.com"
+}
 
-Uses in-memory storage (data resets when the server restarts).
+text
 
-Can be extended with MongoDB / MySQL for persistence.
+---
 
-Built as a learning project to demonstrate Node.js, Express, MVC structure, and REST API basics.
+## Notes
+
+- Use custom string IDs for both books and users.
+- Do **not** include body in GET or DELETE requests.
+- Always supply the valid JWT token in the `Authorization` header.
+- Issue and return endpoints require only an empty POST request.
+
+---
+
+## Testing Tips
+
+- Generate your token with `node generateToken.js`.
+- Use Postman or curl with the bearer token set.
+- For example, a GET books request with curl:
+
+curl -H "Authorization: Bearer <your_token>" http://localhost:5000/api/books
+
+text
+
+---
+
+## License
+
+MIT License
+
+---
+
+Feel free to adjust data and IDs as you like for your testing and usage.
